@@ -10,6 +10,7 @@ const MeetingList = () => {
   const navigation = useNavigation();
   const meetingList = useAtomValue(meetingListAtom);
   const moimEnterStatus = useAtomValue(moimEnterStatusAtom);
+
   const renderItem = useCallback(({item, index}) => {
     return (
       // <TouchableOpacity

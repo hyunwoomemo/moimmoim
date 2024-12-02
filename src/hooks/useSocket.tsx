@@ -59,9 +59,11 @@ const useSocket = () => {
     socket.on('disconnect', data => {});
 
     socket.on('message', id => {
+      console.log('messagemessageid', id);
+
       socket.emit('join', {
         region_code: user.region_code,
-        user: {name: user.name},
+        user: {name: user.nickname},
       });
     });
 
@@ -74,6 +76,7 @@ const useSocket = () => {
     });
 
     socket.on('list', data => {
+      console.log('list', data);
       setMeeting(prev => ({...prev, list: data}));
     });
 
@@ -160,12 +163,19 @@ const useSocket = () => {
     navigation.navigate('Home');
   };
 
-  const joinMeeting = ({region_code, users_id, meetings_id, type}) => {
+  const joinMeeting = ({
+    region_code,
+    users_id,
+    meetings_id,
+    type,
+    onesignal_id,
+  }) => {
     socket.emit('joinMeeting', {
       region_code,
       users_id,
       meetings_id,
       type,
+      onesignal_id,
     });
   };
 

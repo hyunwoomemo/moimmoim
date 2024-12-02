@@ -5,24 +5,24 @@ import {config} from '../../constants';
 axios.defaults.baseURL = config.API_BASE_URL;
 
 // 요청 인터셉터: 모든 요청에 대해 처리
-// axios.interceptors.request.use(async config => {
-//   // const token = await getToken();
-//   // const parseToken = token
-//   //   ?.split('')
-//   //   ?.filter(v => v !== '"')
-//   //   ?.join('');
+axios.interceptors.request.use(async config => {
+  const token = await AsyncStorage.getItem('accessToken');
+  // const parseToken = token
+  //   ?.split('')
+  //   ?.filter(v => v !== '"')
+  //   ?.join('');
 
-//   // const userAgent = await DeviceInfo.getUserAgent();
+  // const userAgent = await DeviceInfo.getUserAgent();
 
-//   // config.headers['User-Agent'] = `${userAgent} ;appName=spolive`;
+  // config.headers['User-Agent'] = `${userAgent} ;appName=spolive`;
 
-//   // if (token) {
-//   //   config.headers.token = `${parseToken}`;
-//   // } else {
-//   // }
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  } else {
+  }
 
-//   return config;
-// });
+  return config;
+});
 
 // 응답 인터셉터: 모든 응답에 대해 처리
 axios.interceptors.response.use(onFulfil);

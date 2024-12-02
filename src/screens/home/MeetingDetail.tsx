@@ -5,7 +5,7 @@ import {useAtom, useAtomValue, useSetAtom} from 'jotai';
 import {meetingAtom, moimEnterStatusAtom} from '../../store/meeting/atom';
 import moment from 'moment';
 import {users} from '../../../dummy';
-import {userDataAtom} from '../../store/user/atom';
+import {userAtom, userDataAtom} from '../../store/user/atom';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {currentScreenAtom} from '../../store/common/atom';
 import Text from '../../components/common/Text';
@@ -26,7 +26,7 @@ const MeetingDetail = ({route}) => {
   const [scrollLoading, setScrollLoading] = useState(true);
 
   const [text, setText] = useState('');
-  const user = useAtomValue(userDataAtom);
+  const user = useAtomValue(userAtom);
 
   const scrollViewRef = useRef();
   const newMessageRef = useRef();
@@ -39,13 +39,13 @@ const MeetingDetail = ({route}) => {
     // });
 
     enterMeeting({
-      region_code: user.region_code,
+      region_code: user.data.region_code,
       meetings_id: route.params.id,
       type: route.params.type,
     });
     return () => {
       socket.emit('leaveMeeting', {
-        region_code: user.region_code,
+        region_code: user.data.region_code,
         meetings_id: route.params.id,
       });
       // leaveMeeting({
@@ -66,7 +66,7 @@ const MeetingDetail = ({route}) => {
     console.log('readUsers', readUsers);
 
     // 읽어야할 사람들의 활동시간
-    const activeUsers = meeting.activeUsers.filter(v =>
+    const activeUsers = meeting?.activeUsers?.filter(v =>
       readUsers.includes(v.users_id),
     );
 
@@ -119,10 +119,10 @@ const MeetingDetail = ({route}) => {
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent:
-                  item.users_id === user.id ? 'flex-end' : 'flex-start',
+                  item.users_id === user.data.id ? 'flex-end' : 'flex-start',
               }}>
               <View style={{padding: 5, gap: 5}}>
-                {item.users_id !== user.id && item.first && (
+                {item.users_id !== user.data.id && item.first && (
                   <View>
                     <Text size={16}>{item.users_id}</Text>
                   </View>
@@ -130,7 +130,7 @@ const MeetingDetail = ({route}) => {
                 <View
                   style={{
                     flexDirection:
-                      item.users_id === user.id ? 'row-reverse' : 'row',
+                      item.users_id === user.data.id ? 'row-reverse' : 'row',
                     gap: 10,
                     alignItems: 'center',
                     padding: 3,
@@ -149,7 +149,8 @@ const MeetingDetail = ({route}) => {
                       {unReadCheck(item) > 0 && (
                         <View
                           style={{
-                            marginLeft: item.users_id === user.id ? 'auto' : '',
+                            marginLeft:
+                              item.users_id === user.data.id ? 'auto' : '',
                           }}>
                           <Text size={12} color={'gray'}>
                             {unReadCheck(item)}
@@ -166,7 +167,8 @@ const MeetingDetail = ({route}) => {
                       {unReadCheck(item) > 0 && (
                         <View
                           style={{
-                            marginLeft: item.users_id === user.id ? 'auto' : '',
+                            marginLeft:
+                              item.users_id === user.data.id ? 'auto' : '',
                           }}>
                           <Text size={12} color={'gray'}>
                             {unReadCheck(item)}
@@ -234,11 +236,13 @@ const MeetingDetail = ({route}) => {
   }, [meeting]);
 
   const handleJoinMeeting = () => {
+    console.log('handleJoinMeetinghandleJoinMeeting', user);
     joinMeeting({
       meetings_id: route.params.id,
-      region_code: user.region_code,
-      users_id: user.id,
+      region_code: user.data.region_code,
+      users_id: user.data.id,
       type: route.params.type,
+      onesignal_id: user.onesignal_id,
     });
   };
 
@@ -253,20 +257,18 @@ const MeetingDetail = ({route}) => {
 
   const handleChangeText = text => {
     socket?.emit('typing', {
-      region_code: user.region_code,
+      region_code: user.data.region_code,
       meetings_id: route.params.id,
-      users_id: user.id,
+      users_id: user.data.id,
     });
     setText(text);
   };
 
-  console.log('meeting.typingUsers', meeting.typingUsers);
-
   return (
     <View style={{flex: 1, backgroundColor: 'rgb(239,251,255)'}}>
       <Text>{meeting?.data?.name}</Text>
-      {meeting?.activeUsers?.map(v => (
-        <View>
+      {meeting?.activeUsers?.map((v, i) => (
+        <View key={`${v.users_id}-${i}`}>
           <Text>{v.users_id}</Text>
           <Text>{moment(v.last_active_time).format('hh:mm:ss a')}</Text>
         </View>
@@ -307,10 +309,11 @@ const MeetingDetail = ({route}) => {
           // })}
         />
       </View>
-      {meeting.typingUsers.filter(v => v.users_id !== user.id).length > 0 && (
+      {meeting.typingUsers.filter(v => v.users_id !== user.data.id).length >
+        0 && (
         <Text color={'gray'} style={{padding: 10, backgroundColor: '#fff'}}>
           {meeting.typingUsers
-            .filter(v => v.users_id !== user.id)
+            .filter(v => v.users_id !== user.data.id)
             .map(v => v.users_id)
             .join(',')}
           님이 입력 중입니다.

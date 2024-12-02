@@ -9,37 +9,6 @@ import MeetingList from '../../components/meeting/MeetingList';
 import {useNavigationState} from '@react-navigation/native';
 
 const Home = ({navigation}) => {
-  const [user, setUser] = useAtom(userAtom);
-
-  if (user.data && Object.keys(user.data).length === 0) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexDirection: 'row',
-          gap: 10,
-          // flexWrap: 'wrap',
-        }}>
-        {users.map(v => (
-          <TouchableOpacity
-            key={v.id}
-            onPress={() => setUser(prev => ({...prev, data: v}))}
-            style={{
-              // flex: 1,
-              alignItems: 'center',
-              padding: 50,
-              backgroundColor: 'lightgray',
-              borderRadius: 20,
-            }}>
-            <Text>{v.nickname}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    );
-  }
-
   return (
     <Screen home>
       <MeetingList />

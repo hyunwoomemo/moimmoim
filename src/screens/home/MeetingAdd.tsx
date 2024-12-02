@@ -9,13 +9,13 @@ import {
 } from 'react-native';
 import useSocket from '../../hooks/useSocket';
 import {useAtomValue} from 'jotai';
-import {userDataAtom} from '../../store/user/atom';
+import {userAtom, userDataAtom} from '../../store/user/atom';
 import {moimApi} from '../../lib/api';
 import useBottomSheet from '../../hooks/useBottomSheet';
 
 const MeetingAdd = ({navigation}) => {
   const [values, setValues] = useState({});
-  const user = useAtomValue(userDataAtom);
+  const user = useAtomValue(userAtom);
   const {generateMeeting} = useSocket();
   const [category, setCategory] = useState({});
 
@@ -23,14 +23,17 @@ const MeetingAdd = ({navigation}) => {
     setValues(prev => ({...prev, [type]: text}));
   };
 
+  console.log('user', user);
+
   const onPress = () => {
     generateMeeting({
       value: {
         ...values,
         category1: values.category1.id,
         category2: values.category2.id,
+        onesignal_id: user.onesignal_id,
       },
-      users_id: user.id,
+      users_id: user.data.id,
     });
   };
 

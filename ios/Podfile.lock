@@ -7,6 +7,52 @@ PODS:
   - hermes-engine (0.76.1):
     - hermes-engine/Pre-built (= 0.76.1)
   - hermes-engine/Pre-built (0.76.1)
+  - OneSignalXCFramework (5.2.8):
+    - OneSignalXCFramework/OneSignalComplete (= 5.2.8)
+  - OneSignalXCFramework/OneSignal (5.2.8):
+    - OneSignalXCFramework/OneSignalCore
+    - OneSignalXCFramework/OneSignalExtension
+    - OneSignalXCFramework/OneSignalLiveActivities
+    - OneSignalXCFramework/OneSignalNotifications
+    - OneSignalXCFramework/OneSignalOSCore
+    - OneSignalXCFramework/OneSignalOutcomes
+    - OneSignalXCFramework/OneSignalUser
+  - OneSignalXCFramework/OneSignalComplete (5.2.8):
+    - OneSignalXCFramework/OneSignal
+    - OneSignalXCFramework/OneSignalInAppMessages
+    - OneSignalXCFramework/OneSignalLocation
+  - OneSignalXCFramework/OneSignalCore (5.2.8)
+  - OneSignalXCFramework/OneSignalExtension (5.2.8):
+    - OneSignalXCFramework/OneSignalCore
+    - OneSignalXCFramework/OneSignalOutcomes
+  - OneSignalXCFramework/OneSignalInAppMessages (5.2.8):
+    - OneSignalXCFramework/OneSignalCore
+    - OneSignalXCFramework/OneSignalNotifications
+    - OneSignalXCFramework/OneSignalOSCore
+    - OneSignalXCFramework/OneSignalOutcomes
+    - OneSignalXCFramework/OneSignalUser
+  - OneSignalXCFramework/OneSignalLiveActivities (5.2.8):
+    - OneSignalXCFramework/OneSignalCore
+    - OneSignalXCFramework/OneSignalOSCore
+    - OneSignalXCFramework/OneSignalUser
+  - OneSignalXCFramework/OneSignalLocation (5.2.8):
+    - OneSignalXCFramework/OneSignalCore
+    - OneSignalXCFramework/OneSignalNotifications
+    - OneSignalXCFramework/OneSignalOSCore
+    - OneSignalXCFramework/OneSignalUser
+  - OneSignalXCFramework/OneSignalNotifications (5.2.8):
+    - OneSignalXCFramework/OneSignalCore
+    - OneSignalXCFramework/OneSignalExtension
+    - OneSignalXCFramework/OneSignalOutcomes
+  - OneSignalXCFramework/OneSignalOSCore (5.2.8):
+    - OneSignalXCFramework/OneSignalCore
+  - OneSignalXCFramework/OneSignalOutcomes (5.2.8):
+    - OneSignalXCFramework/OneSignalCore
+  - OneSignalXCFramework/OneSignalUser (5.2.8):
+    - OneSignalXCFramework/OneSignalCore
+    - OneSignalXCFramework/OneSignalNotifications
+    - OneSignalXCFramework/OneSignalOSCore
+    - OneSignalXCFramework/OneSignalOutcomes
   - RCT-Folly (2024.01.01.00):
     - boost
     - DoubleConversion
@@ -1242,6 +1288,9 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-onesignal (5.2.7):
+    - OneSignalXCFramework (= 5.2.8)
+    - React (< 1.0.0, >= 0.13.0)
   - react-native-safe-area-context (4.14.0):
     - DoubleConversion
     - glog
@@ -1575,7 +1624,7 @@ PODS:
     - React-logger (= 0.76.1)
     - React-perflogger (= 0.76.1)
     - React-utils (= 0.76.1)
-  - RNCAsyncStorage (2.0.0):
+  - RNCAsyncStorage (2.1.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1780,6 +1829,7 @@ DEPENDENCIES:
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
+  - OneSignalXCFramework (< 6.0, >= 5.0.0)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTDeprecation (from `../node_modules/react-native/ReactApple/Libraries/RCTFoundation/RCTDeprecation`)
@@ -1811,6 +1861,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
+  - react-native-onesignal (from `../node_modules/react-native-onesignal`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -1848,6 +1899,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - OneSignalXCFramework
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -1922,6 +1974,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   React-microtasksnativemodule:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
+  react-native-onesignal:
+    :path: "../node_modules/react-native-onesignal"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   React-nativeconfig:
@@ -1998,6 +2052,7 @@ SPEC CHECKSUMS:
   fmt: 10c6e61f4be25dc963c36bd73fc7b1705fe975be
   glog: 08b301085f15bcbb6ff8632a8ebaf239aae04e6a
   hermes-engine: 46f1ffbf0297f4298862068dd4c274d4ac17a1fd
+  OneSignalXCFramework: 4215fb8deb8a669504d39c02dffaf2ec8ebe10ae
   RCT-Folly: bf5c0376ffe4dd2cf438dcf86db385df9fdce648
   RCTDeprecation: fde92935b3caa6cb65cbff9fbb7d3a9867ffb259
   RCTRequired: 75c6cee42d21c1530a6f204ba32ff57335d19007
@@ -2027,6 +2082,7 @@ SPEC CHECKSUMS:
   React-logger: 97c9dafae1f1a638001a9d1d0e93d431f2f9cb7b
   React-Mapbuffer: 3146a13424f9fec2ea1f1462d49d566e4d69b732
   React-microtasksnativemodule: 02d218c79c72d373a92a8552183f4ead0d1c6e05
+  react-native-onesignal: 439c090f45a362ee8074d8821780a2380f002054
   react-native-safe-area-context: 2500e4fe998caad50ad3bc51ec23ef951308569e
   React-nativeconfig: 93fe8c85a8c40820c57814e30f3e44b94c995a7b
   React-NativeModulesApple: b3e076fd0d7b73417fe1e8c8b26e3c57ae9b74aa
@@ -2055,7 +2111,7 @@ SPEC CHECKSUMS:
   React-utils: 5362bd16a9563f9916e7a56c011ddc533507650f
   ReactCodegen: 865bafc5c17ec2181620ced1a32c39c38ab2951d
   ReactCommon: 422e364463f33e336fc4db196aeb50fd801d90d6
-  RNCAsyncStorage: 597673c6086d359029afefef8fd5859f1f35ab87
+  RNCAsyncStorage: fe98f1b459a87b80f12207da80c50b3a3abb6081
   RNFlashList: 2af1645548006fe5e4586c8c3d7e84f060a5478f
   RNGestureHandler: fc5ce5bf284640d3af6431c3a5c3bc121e98d045
   RNReanimated: 77242c6d67416988a2fd9f5cf574bb3e60016362
@@ -2063,6 +2119,6 @@ SPEC CHECKSUMS:
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: 157bed1c62656587df4639d4dc29714898f8fb10
 
-PODFILE CHECKSUM: 9d66480936a1cf44ecb9f9caa30d2e34a107413b
+PODFILE CHECKSUM: 3b8f50df675b3a8a38d1020bd9b95e06a0a64f01
 
 COCOAPODS: 1.15.2

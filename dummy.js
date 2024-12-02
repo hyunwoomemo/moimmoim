@@ -7,7 +7,7 @@ export const users = [
   {
     nickname: '숭열',
     id: 1,
-    region_code: 'A03',
+    region_code: 'A02',
   },
   {
     nickname: '혜미',

@@ -2,7 +2,7 @@ import {useAtom, useAtomValue} from 'jotai';
 import {useEffect, useState} from 'react';
 import io from 'socket.io-client';
 import {meetingAtom, moimEnterStatusAtom} from '../store/meeting/atom';
-import {userDataAtom} from '../store/user/atom';
+import {userAtom, userDataAtom} from '../store/user/atom';
 import {useNavigation} from '@react-navigation/native';
 import {config} from '../../constants';
 import moment from 'moment';
@@ -12,7 +12,7 @@ export let socket = null;
 
 const useSocket = () => {
   const [meeting, setMeeting] = useAtom(meetingAtom);
-  const user = useAtomValue(userDataAtom);
+  const user = useAtomValue(userAtom);
   const navigation = useNavigation();
   const [moimEnterStatus, setMoimEnterStatus] = useAtom(moimEnterStatusAtom);
 
@@ -52,7 +52,7 @@ const useSocket = () => {
       }
     });
 
-    socket.on('myList', data => {});
+    socket.on('myList', data => console.log('myListmyList', data));
 
     socket.on('connect_error', error => {});
 
@@ -62,8 +62,8 @@ const useSocket = () => {
       console.log('messagemessageid', id);
 
       socket.emit('join', {
-        region_code: user.region_code,
-        user: {name: user.nickname},
+        region_code: user.data.region_code,
+        user: {name: user.data.nickname},
       });
     });
 
@@ -72,11 +72,12 @@ const useSocket = () => {
     // });
 
     socket.on('enterRes', data => {
+      console.log(' enterRes enterRes data', data);
+
       setMoimEnterStatus(data);
     });
 
     socket.on('list', data => {
-      console.log('list', data);
       setMeeting(prev => ({...prev, list: data}));
     });
 
@@ -135,7 +136,8 @@ const useSocket = () => {
       region_code,
       meetings_id,
       type,
-      users_id: user.id,
+      users_id: user.data.id,
+      onesignal_id: user.onesignal_id,
     });
 
     setMeeting(prev => ({...prev, room: {region_code, meetings_id}}));
@@ -150,7 +152,7 @@ const useSocket = () => {
       contents: text,
       meetings_id,
       region_code,
-      users_id: user.id,
+      users_id: user.data.id,
     });
   };
 

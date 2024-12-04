@@ -40,8 +40,6 @@ function App(): React.JSX.Element {
     OneSignal.User.getOnesignalId().then(res => console.log('rrr', res)),
   );
 
-  OneSignal.login('test@gmail.com');
-
   useEffect(() => {
     OneSignal.User.getOnesignalId().then(res => {
       setUser(prev => ({...prev, onesignal_id: res}));

@@ -5,6 +5,7 @@ import {authApi} from '../../lib/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useAtom} from 'jotai';
 import {userAtom} from '../../store/user/atom';
+import {OneSignal} from 'react-native-onesignal';
 
 const Login = () => {
   const [values, setValues] = useState({});
@@ -20,6 +21,12 @@ const Login = () => {
 
     console.log('res', res);
 
+    if (!res.success) {
+      return;
+    }
+
+    OneSignal.login(email);
+
     const {accessToken, refreshToken} = res.data;
 
     await AsyncStorage.setItem('accessToken', accessToken);
@@ -30,7 +37,7 @@ const Login = () => {
     console.log('info', info);
 
     if (info.success) {
-      setUser(prev => ({...prev, data: {...info.data, region_code: 'A02'}}));
+      setUser(prev => ({...prev, data: {...info.data, region_code: 'A03'}}));
     } else {
       Alert.alert('유저 정보 호출에 실패했습니다.');
     }

@@ -70,8 +70,6 @@ const MeetingDetail = ({route}) => {
       readUsers.includes(v.users_id),
     );
 
-    console.log('activeUsers', activeUsers);
-
     const count = readUsers.reduce((result, cur) => {
       if (
         moment(
@@ -323,6 +321,8 @@ const MeetingDetail = ({route}) => {
         <TextInput
           onChangeText={handleChangeText}
           value={text}
+          // ref={inputRef}
+          submitBehavior="submit"
           onSubmitEditing={handleSendMessage}
           style={{flex: 1, borderWidth: 1, padding: 10, borderRadius: 10}}
         />

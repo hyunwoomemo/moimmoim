@@ -46,9 +46,11 @@ const MeetingItem = ({data}) => {
             alignItems: 'center',
           }}>
           <View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
-            <Text size={12} color={'#217574'}>
-              {moment(data.last_active_time).fromNow()}
-            </Text>
+            {data.last_active_time && (
+              <Text size={12} color={'#217574'}>
+                {moment(data.last_active_time).fromNow()}
+              </Text>
+            )}
             <Text>{data.type === 3 ? '일반 모임' : '비밀 모임'}</Text>
           </View>
           <Text>{data.userCount}명</Text>

@@ -72,8 +72,6 @@ const useSocket = () => {
     // });
 
     socket.on('enterRes', data => {
-      console.log(' enterRes enterRes data', data);
-
       setMoimEnterStatus(data);
     });
 

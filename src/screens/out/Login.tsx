@@ -37,7 +37,7 @@ const Login = () => {
     console.log('info', info);
 
     if (info.success) {
-      setUser(prev => ({...prev, data: {...info.data, region_code: 'A03'}}));
+      setUser(prev => ({...prev, data: {...info.data, region_code: 'A02'}}));
     } else {
       Alert.alert('유저 정보 호출에 실패했습니다.');
     }

@@ -38,11 +38,13 @@ const MeetingItem = ({data}) => {
             /
           </Text>
           <Text size={12}>{data.category2_name}</Text>
-          {data.likeCount && (
-            <View style={{marginLeft: 'auto'}}>
-              <Text>좋아요 {data.likeCount}</Text>
-            </View>
-          )}
+          <>
+            {data.likeCount ? (
+              <View style={{marginLeft: 'auto'}}>
+                <Text>좋아요 {data.likeCount}</Text>
+              </View>
+            ) : undefined}
+          </>
         </View>
 
         <View

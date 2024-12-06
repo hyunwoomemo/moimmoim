@@ -3,47 +3,35 @@ import {
   useNavigationContainerRef,
 } from '@react-navigation/native';
 
-import React, {useEffect, useRef} from 'react';
-import {
-  Platform,
-  PushNotificationIOS,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-} from 'react-native';
-import BottomTab from './src/navigations/BottomTab';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {Platform} from 'react-native';
 import {useAtom, useSetAtom} from 'jotai';
 import {currentScreenAtom} from './src/store/common/atom';
 import {CustomStatusBar} from './src/components/common/CustomStatusBar';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {OneSignal} from 'react-native-onesignal';
-import {config} from './constants/index';
 import {userAtom} from './src/store/user/atom';
 import RootNav from './src/navigations/RootNav';
 import messaging from '@react-native-firebase/messaging';
 // import { Platform, Alert } from 'react-native';
 // import PushNotification from 'react-native-push-notification';
+import DeviceInfo from 'react-native-device-info';
+import {StyleSheet} from 'react-native-unistyles';
+import {appThemes, breakpoints} from './unistyles';
 
 function App(): React.JSX.Element {
-  const [user, setUser] = useAtom(userAtom);
+  const setUser = useSetAtom(userAtom);
   const navigationRef = useNavigationContainerRef();
   const routeNameRef = useRef();
 
+  useEffect(() => {
+    DeviceInfo.getUniqueId().then(device_id => {
+      console.log('device_id', device_id);
+    }); // 디바이스 고유 ID
+  }, []);
+
   const setCurrentScreen = useSetAtom(currentScreenAtom);
 
-  // // OneSignal Initialization
-  // OneSignal?.initialize(config.ONESIGNAL_ID);
-
-  // // requestPermission will show the native iOS or Android notification permission prompt.
-  // // We recommend removing the following code and instead using an In-App Message to prompt for notification permission
-  // OneSignal?.Notifications.requestPermission(true);
-
-  // // Method for listening for notification clicks
-  // OneSignal?.Notifications.addEventListener('click', event => {
-  //   console.log('OneSignal: notification clicked:', event.result);
-  // });
-
-  const requestUserPermission = async () => {
+  const requestUserPermission = useCallback(async () => {
     const authStatus = await messaging().requestPermission();
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
@@ -55,9 +43,7 @@ function App(): React.JSX.Element {
 
       const fcmToken = await messaging().getToken();
       console.log('FCM Token:', fcmToken);
-
       setUser(prev => ({...prev, fcmToken}));
-
       // 포그라운드 메시지 리스너
       messaging().onMessage(async remoteMessage => {
         console.log('포그라운드 메시지 수신:', remoteMessage);
@@ -74,14 +60,20 @@ function App(): React.JSX.Element {
         console.log('백그라운드 메시지 수신:', remoteMessage);
       });
     }
-  };
+  }, [setUser]);
 
   useEffect(() => {
-    // OneSignal.User.getOnesignalId().then(res => {
-    //   setUser(prev => ({...prev, onesignal_id: res}));
-    // });
-
     requestUserPermission();
+  }, [requestUserPermission]);
+
+  useEffect(() => {
+    StyleSheet.configure({
+      settings: {
+        initialTheme: 'light',
+      },
+      breakpoints: breakpoints,
+      themes: appThemes,
+    });
   }, []);
 
   return (
@@ -114,24 +106,5 @@ function App(): React.JSX.Element {
     </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;

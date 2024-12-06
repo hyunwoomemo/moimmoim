@@ -55,6 +55,7 @@ const MeetingDetail = ({route}) => {
       region_code: user.data.region_code,
       meetings_id: route.params.id,
       type: route.params.type,
+      fcmToken: user.fcmToken,
     });
     return () => {
       socket.emit('leaveMeeting', {

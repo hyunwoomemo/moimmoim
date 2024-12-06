@@ -140,6 +140,7 @@ const useSocket = () => {
       meetings_id,
       type,
       users_id: user.data.user_id,
+      fcmToken,
     });
 
     setMeeting(prev => ({...prev, room: {region_code, meetings_id}}));

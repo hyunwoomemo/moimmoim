@@ -1,7 +1,21 @@
-import React from 'react';
+import React, {StyleHTMLAttributes} from 'react';
 import {Text as BasicText} from 'react-native';
 
-const Text = ({children, bold, size, color, style}) => {
+interface ITextProps {
+  children: React.ReactNode;
+  bold?: string;
+  size?: number;
+  color?: string;
+  style?: StyleHTMLAttributes<{}>;
+}
+
+const Text = ({
+  children,
+  bold = undefined,
+  size,
+  color = 'black',
+  style = {},
+}: ITextProps) => {
   return (
     <BasicText
       style={{

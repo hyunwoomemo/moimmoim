@@ -19,7 +19,7 @@ export const users = [
 export const areas = [
   {
     name: '논현1동',
-    code: 'A02',
+    code: 'RC003',
   },
   {
     name: '증일동',

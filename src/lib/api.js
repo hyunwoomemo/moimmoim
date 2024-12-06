@@ -6,6 +6,8 @@ export const moimApi = {
   },
   getMoreMessage: ({meetings_id, length}) =>
     request.post('/moim/getMoreMessage', {meetings_id, length}),
+  likeMoim: ({meetings_id, users_id}) =>
+    request.post('/moim/likeMoim', {meetings_id, users_id}),
 };
 
 export const authApi = {

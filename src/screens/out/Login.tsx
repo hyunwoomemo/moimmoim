@@ -19,8 +19,6 @@ const Login = () => {
     const {email, password} = values;
     const res = await authApi.login({email, password});
 
-    console.log('res', res);
-
     if (!res.success) {
       return;
     }
@@ -34,10 +32,8 @@ const Login = () => {
 
     const info = await authApi.getUserInfo();
 
-    console.log('info', info);
-
     if (info.success) {
-      setUser(prev => ({...prev, data: {...info.data, region_code: 'A02'}}));
+      setUser(prev => ({...prev, data: {...info.data, region_code: 'RC003'}}));
     } else {
       Alert.alert('유저 정보 호출에 실패했습니다.');
     }

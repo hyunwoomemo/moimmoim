@@ -23,8 +23,6 @@ const MeetingAdd = ({navigation}) => {
     setValues(prev => ({...prev, [type]: text}));
   };
 
-  console.log('user', user);
-
   const onPress = () => {
     generateMeeting({
       value: {
@@ -33,7 +31,7 @@ const MeetingAdd = ({navigation}) => {
         category2: values.category2.id,
         onesignal_id: user.onesignal_id,
       },
-      users_id: user.data.id,
+      users_id: user.data.user_id,
     });
   };
 

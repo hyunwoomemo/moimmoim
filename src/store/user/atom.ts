@@ -3,7 +3,7 @@ import {selectAtom} from 'jotai/utils';
 
 export const userAtom = atom({
   data: {},
-  onesignal_id: '',
+  fcmToken: '',
 });
 
 export const userDataAtom = selectAtom(userAtom, user => user.data);

@@ -18,9 +18,8 @@ const RootNav = () => {
 
   useEffect(() => {
     authApi.getUserInfo().then(res => {
-      console.log('getUserInfo res', res);
       if (res.success) {
-        setUser(prev => ({...prev, data: {...res.data, region_code: 'A02'}}));
+        setUser(prev => ({...prev, data: {...res.data, region_code: 'RC003'}}));
       }
     });
   }, []);

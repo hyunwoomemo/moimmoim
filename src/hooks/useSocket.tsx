@@ -52,15 +52,13 @@ const useSocket = () => {
       }
     });
 
-    socket.on('myList', data => console.log('myListmyList', data));
+    socket.on('myList', data => {});
 
     socket.on('connect_error', error => {});
 
     socket.on('disconnect', data => {});
 
     socket.on('message', id => {
-      console.log('messagemessageid', id);
-
       socket.emit('join', {
         region_code: user.data.region_code,
         user: {name: user.data.nickname},
@@ -75,7 +73,12 @@ const useSocket = () => {
       setMoimEnterStatus(data);
     });
 
+    socket.on('error', data => {
+      console.log('error', data);
+    });
+
     socket.on('list', data => {
+      console.log('data', data);
       setMeeting(prev => ({...prev, list: data}));
     });
 
@@ -83,8 +86,6 @@ const useSocket = () => {
       // const parseData = data.list;
 
       const parseData = nextParseMessages(data.list);
-
-      console.log('parseData', parseData);
 
       setMeeting(prev => ({
         ...prev,
@@ -108,7 +109,6 @@ const useSocket = () => {
     });
 
     socket.on('meetingActive', data => {
-      console.log('meetingActive', data);
       setMeeting(prev => ({...prev, activeUsers: data}));
     });
 
@@ -117,8 +117,13 @@ const useSocket = () => {
     });
 
     socket.on('userTyping', data => {
-      console.log('usertyping', data);
       setMeeting(prev => ({...prev, typingUsers: data}));
+    });
+
+    socket.on('userList', data => {
+      console.log('userListuserListuserList', data);
+
+      setMeeting(prev => ({...prev, userList: data}));
     });
 
     socket.on('disconnect', e => {});
@@ -129,19 +134,18 @@ const useSocket = () => {
     };
   }, [user, socket]);
 
-  const enterMeeting = ({region_code, meetings_id, type}) => {
+  const enterMeeting = ({region_code, meetings_id, type, fcmToken}) => {
     socket.emit('enterMeeting', {
       region_code,
       meetings_id,
       type,
-      users_id: user.data.id,
-      onesignal_id: user.onesignal_id,
+      users_id: user.data.user_id,
     });
 
     setMeeting(prev => ({...prev, room: {region_code, meetings_id}}));
   };
 
-  const sendMessage = ({text, meetings_id, region_code}) => {
+  const sendMessage = ({text, meetings_id, region_code, tag_id}) => {
     if (!text) {
       return;
     }
@@ -150,7 +154,8 @@ const useSocket = () => {
       contents: text,
       meetings_id,
       region_code,
-      users_id: user.data.id,
+      users_id: user.data.user_id,
+      tag_id,
     });
   };
 
@@ -168,14 +173,21 @@ const useSocket = () => {
     users_id,
     meetings_id,
     type,
-    onesignal_id,
+    fcmToken,
   }) => {
     socket.emit('joinMeeting', {
       region_code,
       users_id,
       meetings_id,
       type,
-      onesignal_id,
+      fcmToken,
+    });
+  };
+
+  const getUserList = ({meetings_id, region_code}) => {
+    socket.emit('getUserList', {
+      meetings_id,
+      region_code,
     });
   };
 

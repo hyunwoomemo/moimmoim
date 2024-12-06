@@ -12,11 +12,9 @@ export const parseMessages = data => {
       const itemKey = time + '-' + users_id + '-' + cur.id;
 
       if (!result[key]) {
-        console.log('dsmfksmdfkm');
         result[key] = [[cur]];
       }
 
-      console.log('zxczxc', result[key]);
       if (i > 0) {
         if (arr[i - 1].users_id != cur.users_id) {
           result[key].push([cur]);
@@ -24,12 +22,9 @@ export const parseMessages = data => {
           result[key][result[key].length - 1].push(cur);
         }
       }
-      console.log('resultresultresultresult', result);
 
       return result;
-    } catch (err) {
-      console.error('err', err);
-    }
+    } catch (err) {}
   }, {});
 
   const arr = [];
@@ -62,8 +57,6 @@ export const parseMessages = data => {
 
     arr.push(...data);
   }
-
-  console.log('zxcasdasd', arr);
 
   return arr;
 };

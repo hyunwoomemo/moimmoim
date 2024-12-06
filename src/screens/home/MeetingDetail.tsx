@@ -1,5 +1,12 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, FlatList, TextInput, Button} from 'react-native';
+import {
+  View,
+  FlatList,
+  TextInput,
+  Button,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import useSocket from '../../hooks/useSocket';
 import {useAtom, useAtomValue, useSetAtom} from 'jotai';
 import {meetingAtom, moimEnterStatusAtom} from '../../store/meeting/atom';
@@ -16,8 +23,6 @@ const MeetingDetail = ({route}) => {
   const [meeting, setMeeting] = useAtom(meetingAtom);
   const setCurrentScreen = useSetAtom(currentScreenAtom);
 
-  console.log('meeting.messages', meeting.messages);
-
   const moimEnterStatus = useAtomValue(moimEnterStatusAtom);
 
   useEffect(() => {
@@ -30,6 +35,14 @@ const MeetingDetail = ({route}) => {
 
   const scrollViewRef = useRef();
   const newMessageRef = useRef();
+
+  const [tagUser, setTagUser] = useState();
+
+  useEffect(() => {
+    if (tagUser) {
+      setMeeting(prev => ({...prev, userList: []}));
+    }
+  }, [tagUser]);
 
   const {enterMeeting, sendMessage, socket, joinMeeting} = useSocket();
   useEffect(() => {
@@ -55,15 +68,12 @@ const MeetingDetail = ({route}) => {
     };
   }, []);
 
-  console.log('message');
-
   const unReadCheck = item => {
     // 나를 제외한 읽어야할 사람들
     const readUsers = item.users
       .split(',')
       .filter(v => v != item.users_id)
       .map(v => Number(v));
-    console.log('readUsers', readUsers);
 
     // 읽어야할 사람들의 활동시간
     const activeUsers = meeting?.activeUsers?.filter(v =>
@@ -73,7 +83,7 @@ const MeetingDetail = ({route}) => {
     const count = readUsers.reduce((result, cur) => {
       if (
         moment(
-          activeUsers.find(v => v.users_id == cur)?.last_active_time,
+          activeUsers?.find(v => v.users_id == cur)?.last_active_time,
         ).isBefore(moment(item.created_at))
       ) {
         result = result + 1;
@@ -82,14 +92,31 @@ const MeetingDetail = ({route}) => {
       return result;
     }, 0);
 
-    console.log('cccc', count);
     return count;
   };
 
+  const handleMsgPress = useCallback(
+    item => {
+      // 답장 아이템 클릭
+      if (!item.reply_id) {
+        return;
+      }
+
+      if (!meeting?.messages?.list?.length) {
+        return;
+      }
+
+      const index = meeting.messages.list.findIndex(
+        v => v.id === item.reply_id,
+      );
+
+      scrollViewRef.current.scrollToIndex({index});
+    },
+    [meeting.messages],
+  );
+
   const renderItem = useCallback(
     ({item, index}) => {
-      console.log('zxczxczxc', item);
-
       if (!item) {
         return;
       }
@@ -117,38 +144,76 @@ const MeetingDetail = ({route}) => {
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent:
-                  item.users_id === user.data.id ? 'flex-end' : 'flex-start',
+                  item.users_id === user.data.user_id
+                    ? 'flex-end'
+                    : 'flex-start',
               }}>
               <View style={{padding: 5, gap: 5}}>
-                {item.users_id !== user.data.id && item.first && (
+                {item.users_id !== user.data.user_id && item.first && (
                   <View>
-                    <Text size={16}>{item.users_id}</Text>
+                    <Text size={16}>{item.nickname}</Text>
                   </View>
                 )}
                 <View
                   style={{
                     flexDirection:
-                      item.users_id === user.data.id ? 'row-reverse' : 'row',
+                      item.users_id === user.data.user_id
+                        ? 'row-reverse'
+                        : 'row',
                     gap: 10,
                     alignItems: 'center',
                     padding: 3,
                     borderRadius: 5,
                   }}>
-                  <View
+                  <TouchableOpacity
+                    onPress={() => handleMsgPress(item)}
                     style={{
                       padding: 10,
                       backgroundColor: '#fff',
+                      borderRadius: 5,
                       // marginHorizontal: 5,
                     }}>
-                    <Text size={16}>{item.contents}</Text>
-                  </View>
+                    {item.reply_id && (
+                      <View style={{padding: 5}}>
+                        <Text>
+                          {
+                            meeting.messages.list.find(
+                              v => v.id === item.reply_id,
+                            ).nickname
+                          }
+                          님에게 답장
+                        </Text>
+                        <View style={{paddingTop: 5}}>
+                          <Text color={'gray'}>
+                            {
+                              meeting.messages.list.find(
+                                v => v.id === item.reply_id,
+                              ).contents
+                            }
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            height: 10,
+                            width: '100%',
+                            minWidth: 70,
+                            borderBottomWidth: 1,
+                            borderBottomColor: 'lightgray',
+                          }}
+                        />
+                      </View>
+                    )}
+                    <View style={{padding: 5}}>
+                      <Text size={16}>{item.contents}</Text>
+                    </View>
+                  </TouchableOpacity>
                   {item.end ? (
                     <View style={{marginTop: 'auto'}}>
                       {unReadCheck(item) > 0 && (
                         <View
                           style={{
                             marginLeft:
-                              item.users_id === user.data.id ? 'auto' : '',
+                              item.users_id === user.data.user_id ? 'auto' : '',
                           }}>
                           <Text size={12} color={'gray'}>
                             {unReadCheck(item)}
@@ -166,7 +231,7 @@ const MeetingDetail = ({route}) => {
                         <View
                           style={{
                             marginLeft:
-                              item.users_id === user.data.id ? 'auto' : '',
+                              item.users_id === user.data.user_id ? 'auto' : '',
                           }}>
                           <Text size={12} color={'gray'}>
                             {unReadCheck(item)}
@@ -186,12 +251,11 @@ const MeetingDetail = ({route}) => {
   );
 
   const handleSendMessage = () => {
-    console.log('nnn', new Date());
-
     sendMessage({
       text,
       meetings_id: route.params.id,
       region_code: meeting.data.region_code,
+      tag_id: tagUser,
     });
 
     setText('');
@@ -234,13 +298,14 @@ const MeetingDetail = ({route}) => {
   }, [meeting]);
 
   const handleJoinMeeting = () => {
-    console.log('handleJoinMeetinghandleJoinMeeting', user);
+    console.log('user', user);
+
     joinMeeting({
       meetings_id: route.params.id,
       region_code: user.data.region_code,
-      users_id: user.data.id,
+      users_id: user.data.user_id,
       type: route.params.type,
-      onesignal_id: user.onesignal_id,
+      fcmToken: user.fcmToken,
     });
   };
 
@@ -254,16 +319,56 @@ const MeetingDetail = ({route}) => {
   }
 
   const handleChangeText = text => {
+    setMeeting(prev => ({...prev, userList: []}));
+    if (text[0] === '@') {
+      if (text.length === 1) {
+        socket.emit('getUserList', {
+          meetings_id: route.params.id,
+          region_code: user.data.region_code,
+        });
+        setTagUser(null);
+      }
+    }
+
     socket?.emit('typing', {
       region_code: user.data.region_code,
       meetings_id: route.params.id,
-      users_id: user.data.id,
+      users_id: user.data.user_id,
     });
     setText(text);
   };
 
+  const StyleText = ({text}) => {
+    console.log('tagUser', tagUser);
+    if (tagUser) {
+      const tagIndex = text.indexOf('@');
+      const emptyIndex = text.indexOf(' ');
+      const tagText = text.slice(tagIndex, emptyIndex);
+      const restText = text.slice(emptyIndex);
+      console.log('tagText', tagText);
+
+      return (
+        <>
+          <Text color={'green'}>{tagText}</Text>
+          <Text>{restText}</Text>
+        </>
+      );
+    } else {
+      return <Text>{text}</Text>;
+    }
+  };
+
   return (
     <View style={{flex: 1, backgroundColor: 'rgb(239,251,255)'}}>
+      <Button
+        title="좋아요"
+        onPress={() =>
+          moimApi.likeMoim({
+            users_id: user.data.user_id,
+            meetings_id: route.params.id,
+          })
+        }
+      />
       <Text>{meeting?.data?.name}</Text>
       {meeting?.activeUsers?.map((v, i) => (
         <View key={`${v.users_id}-${i}`}>
@@ -307,25 +412,49 @@ const MeetingDetail = ({route}) => {
           // })}
         />
       </View>
-      {meeting.typingUsers.filter(v => v.users_id !== user.data.id).length >
-        0 && (
+      {meeting.typingUsers.filter(v => v.users_id !== user.data.user_id)
+        .length > 0 && (
         <Text color={'gray'} style={{padding: 10, backgroundColor: '#fff'}}>
           {meeting.typingUsers
-            .filter(v => v.users_id !== user.data.id)
+            .filter(v => v.users_id !== user.data.user_id)
             .map(v => v.users_id)
             .join(',')}
           님이 입력 중입니다.
         </Text>
       )}
       <View style={{flexDirection: 'row', alignItems: 'center', padding: 20}}>
+        {meeting?.userList?.length > 0 && (
+          <View
+            style={{
+              position: 'absolute',
+              bottom: '200%',
+              left: 0,
+              right: 0,
+              padding: 10,
+              backgroundColor: 'lightgray',
+            }}>
+            {meeting?.userList?.map(v => (
+              <TouchableOpacity
+                onPress={() => {
+                  setTagUser(v.users_id);
+                  setText(prev => prev + v.nickname + ' ');
+                }}
+                style={{padding: 10}}>
+                <Text>{v.nickname}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
         <TextInput
           onChangeText={handleChangeText}
-          value={text}
+          // value={text}
           // ref={inputRef}
           submitBehavior="submit"
           onSubmitEditing={handleSendMessage}
-          style={{flex: 1, borderWidth: 1, padding: 10, borderRadius: 10}}
-        />
+          style={{flex: 1, borderWidth: 1, padding: 10, borderRadius: 10}}>
+          <StyleText text={text} />
+        </TextInput>
         <Button title="전송" onPress={handleSendMessage} />
       </View>
     </View>

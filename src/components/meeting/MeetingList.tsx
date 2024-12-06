@@ -11,6 +11,8 @@ const MeetingList = () => {
   const meetingList = useAtomValue(meetingListAtom);
   const moimEnterStatus = useAtomValue(moimEnterStatusAtom);
 
+  console.log('meetingList', meetingList);
+
   const renderItem = useCallback(({item, index}) => {
     return (
       // <TouchableOpacity

@@ -15,8 +15,6 @@ import messaging from '@react-native-firebase/messaging';
 // import { Platform, Alert } from 'react-native';
 // import PushNotification from 'react-native-push-notification';
 import DeviceInfo from 'react-native-device-info';
-import {StyleSheet} from 'react-native-unistyles';
-import {appThemes, breakpoints} from './unistyles';
 
 function App(): React.JSX.Element {
   const setUser = useSetAtom(userAtom);
@@ -66,15 +64,15 @@ function App(): React.JSX.Element {
     requestUserPermission();
   }, [requestUserPermission]);
 
-  useEffect(() => {
-    StyleSheet.configure({
-      settings: {
-        initialTheme: 'light',
-      },
-      breakpoints: breakpoints,
-      themes: appThemes,
-    });
-  }, []);
+  // useEffect(() => {
+  //   StyleSheet.configure({
+  //     settings: {
+  //       initialTheme: 'light',
+  //     },
+  //     breakpoints: breakpoints,
+  //     themes: appThemes,
+  //   });
+  // }, []);
 
   return (
     <SafeAreaProvider>

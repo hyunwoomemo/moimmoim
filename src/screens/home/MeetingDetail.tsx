@@ -174,7 +174,7 @@ const MeetingDetail = ({route}) => {
                       borderRadius: 5,
                       // marginHorizontal: 5,
                     }}>
-                    {item.reply_id && (
+                    {item.reply_id ? (
                       <View style={{padding: 5}}>
                         <Text>
                           {
@@ -203,7 +203,7 @@ const MeetingDetail = ({route}) => {
                           }}
                         />
                       </View>
-                    )}
+                    ) : undefined}
                     <View style={{padding: 5}}>
                       <Text size={16}>{item.contents}</Text>
                     </View>
@@ -340,7 +340,6 @@ const MeetingDetail = ({route}) => {
   };
 
   const StyleText = ({text}) => {
-    console.log('tagUser', tagUser);
     if (tagUser) {
       const tagIndex = text.indexOf('@');
       const emptyIndex = text.indexOf(' ');
@@ -436,6 +435,7 @@ const MeetingDetail = ({route}) => {
             }}>
             {meeting?.userList?.map(v => (
               <TouchableOpacity
+                key={v.id}
                 onPress={() => {
                   setTagUser(v.users_id);
                   setText(prev => prev + v.nickname + ' ');
